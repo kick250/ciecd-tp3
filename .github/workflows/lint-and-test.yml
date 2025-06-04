@@ -1,0 +1,27 @@
+name: lint and test
+
+on:
+  workflow_call:
+    inputs:
+      run_lint:
+        required: true
+        type: boolean
+      run_tests:
+        required: true
+        type: boolean
+  workflow_dispatch:
+    inputs:
+      run_lint:
+        required: true
+        type: boolean
+      run_tests:
+        required: true
+        type: boolean
+
+jobs:
+  lint:
+    if: ${{ inputs.run_lint == true }}
+    uses: ./.github/workflows/lint.yml
+  test:
+    if: ${{ inputs.run_tests == true }}
+    uses: ./.github/workflows/test.yml

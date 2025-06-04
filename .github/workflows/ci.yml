@@ -1,0 +1,71 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+    inputs:
+      run_lint:
+        required: true
+        type: boolean
+      run_tests:
+        required: true
+        type: boolean
+
+
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+  build:
+    runs-on: ubuntu-latest
+    needs: checkout
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: build
+        run: ./mvnw clean install
+
+  test_and_lint:
+    uses: ./.github/workflows/lint-and-test.yml
+    needs: build
+    with:
+      run_lint: ${{ github.event_name != 'workflow_dispatch' || inputs.run_lint }}
+      run_tests: ${{ github.event_name != 'workflow_dispatch' || inputs.run_tests }}
+
+  package:
+    runs-on: ubuntu-latest
+    needs: test_and_lint
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: jar
+        run: ./mvnw package
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test_and_lint
+    steps:
+      - name: deploy
+        run: echo "Deploy realizado com sucesso"
