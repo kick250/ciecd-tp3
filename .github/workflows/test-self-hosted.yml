@@ -11,4 +11,4 @@ jobs:
         run: uname -a
 
       - name: test2
-        run: sudo apt install openjdk-21-jdk
+        run: sudo apt install -y openjdk-21-jdk
