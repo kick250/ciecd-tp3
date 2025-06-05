@@ -1,0 +1,14 @@
+name: test-self-hosted
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: my-runner
+    steps:
+      - name: test1
+        run: uname -a
+
+      - name: test2
+        run: sudo apt install openjdk-21-jdk
