@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    name: deploy to Dev
+    runs-on: ubuntu-latest
+    environment:
+      name: dev
+    steps:
+      - name: deploy
+        run: |
+          echo "Deploy para ambiente: ${{ vars.ENV_NAME }}"
+          echo "Branch: ${{ github.ref }}"
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    name: deploy to Prod
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    steps:
+      - name: deploy
+        run: |
+          echo "Deploy para produção!"
+          echo "Segredo: ${{ secrets.PROD_SECRET }}"
