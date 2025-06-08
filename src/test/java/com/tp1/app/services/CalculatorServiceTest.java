@@ -32,4 +32,9 @@ public class CalculatorServiceTest {
     public void divide() {
         assertEquals(1, calculatorService.divide(1, 1));
     }
+
+    @Test
+    public void sqrt() {
+        assertEquals(5, calculatorService.sqrt(25));
+    }
 }
