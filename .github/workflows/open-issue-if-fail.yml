@@ -1,0 +1,33 @@
+name: open-issue-if-fail
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  check-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: check
+        id: check
+        run: |
+          if [ -z "${{ secrets.DEPLOY_OK }}" ]; then
+            echo "deploy_success=false" >> $GITHUB_OUTPUT
+          else
+            echo "deploy_success=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: create issue if fail
+        if: steps.check.outputs.deploy_success == 'false'
+        run: |
+          curl -X POST https://api.github.com/repos/${{ github.repository }}/issues \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -d '{
+              "title": "Deploy falhou",
+              "body": "Ocorreu um erro ao fazer deploy",
+              "labels": ["bug", "deploy", "automated"]
+            }'
