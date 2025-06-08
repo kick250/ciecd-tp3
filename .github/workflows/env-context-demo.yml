@@ -1,0 +1,33 @@
+name: env-context-demo
+
+on:
+  workflow_dispatch:
+
+env:
+  STAGE: workflow-level
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+
+    env:
+      STAGE: job-level
+
+    steps:
+      - name: step 1
+        env:
+          STAGE: step-level-1
+        run: |
+          echo "${{ github.actor }}"
+          echo "${{ runner.os }}"
+          echo "$STAGE"
+
+      - name: step 2
+        run: |
+          echo "$STAGE"
+
+      - name: step 3
+        env:
+          STAGE: step-3
+        run: |
+          echo "$STAGE"
